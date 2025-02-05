@@ -105,6 +105,23 @@ class QueryObjectClassBuilder extends ObjectClassBuilder
     }
 
     /**
+     * @param string $typeName
+     */
+    public function addPossibleType(string $typeName)
+    {
+        $upperCamelCaseTypeName = StringLiteralFormatter::formatUpperCamelCase($typeName);
+        $objectClassName = $typeName . 'QueryObject';
+        $method = "public function on$upperCamelCaseTypeName()
+{
+    \$object = new $objectClassName();
+    \$this->addPossibleType(\$object);
+
+    return \$object;
+}";
+        $this->classFile->addMethod($method);
+    }
+
+    /**
      * This method builds the class and writes it to the file system
      */
     public function build(): void
